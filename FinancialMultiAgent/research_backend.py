@@ -13,7 +13,6 @@ from pydantic import BaseModel , Field
 
 
 from langgraph.prebuilt import ToolNode, tools_condition 
-from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.tools import tool
 import requests
 import yfinance as yf
