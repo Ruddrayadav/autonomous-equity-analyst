@@ -3,7 +3,7 @@ import time
 
 # IMPORT YOUR COMPILED GRAPH HERE
 # Change 'research_backend' to whatever you named your original python file
-from reseach_backend import workflow
+from research_backend import workflow
 
 # ---------------------------------------------------------
 # 1. Page Configuration & Custom CSS (The "Wow" Factor)
