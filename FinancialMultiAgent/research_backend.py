@@ -22,7 +22,7 @@ from typing import Dict, Any , Optional , TypedDict , List , Literal
 load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 
 
 def serpapi_search(query: str, limit: int =40):
