@@ -11,7 +11,7 @@ Instead of relying on a single zero-shot LLM prompt, this system utilizes a **st
 
 ## 🧠 System Architecture
 
-![LangGraph Workflow Diagram](workflow.png).
+![LangGraph Workflow Diagram](output.png).
 
 The pipeline is built on a directed acyclic graph (DAG) with the following nodes:
 1. **Data Prep Agent:** Extracts and formats precise ticker symbols (including international exchange suffixes) to bypass scraping blocks.
