@@ -323,10 +323,8 @@ market_researcher_llm = llm.with_structured_output(MarketResearchOutput)
 
 financial_market_llm = llm.with_structured_output(FinancialMetricsOutput)
 
-# %%
 risk_analyzer_llm = llm.with_structured_output(RiskAnalysisOutput)
 
-# %%
 review_agent_llm = llm.with_structured_output(ReviewAgentOutput)
 
 
@@ -442,6 +440,8 @@ def financialMarketingAgent(state : ResearchState):
          ]
     
     response = financial_market_llm.invoke(messages)
+
+    print(f"\n🔍 DEBUG - Financial Agent Output: {response.model_dump()}\n")
 
     return {
     "financial_metrics": response.model_dump()
