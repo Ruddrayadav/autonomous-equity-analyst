@@ -73,8 +73,16 @@ def get_stock_data(symbol: str) -> Dict[str, Any]:
     """
     Comprehensive stock research tool using yfinance
     """
+    # 1. Create a custom web session
+    session = requests.Session()
+    
+    # 2. Add a fake User-Agent to disguise the Streamlit server
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+    })
 
-    stock = yf.Ticker(symbol)
+    # 3. Pass the session into the Ticker
+    stock = yf.Ticker(symbol, session=session)
 
     try:
         info = stock.info
@@ -85,29 +93,32 @@ def get_stock_data(symbol: str) -> Dict[str, Any]:
         cashflow = stock.cashflow
 
         # Latest rows
-        latest_financial_col = financials.columns[0]
-        latest_balance_col = balance_sheet.columns[0]
-        latest_cashflow_col = cashflow.columns[0]
+        latest_financial_col = financials.columns[0] if not financials.empty else None
+        latest_balance_col = balance_sheet.columns[0] if not balance_sheet.empty else None
+        latest_cashflow_col = cashflow.columns[0] if not cashflow.empty else None
 
         # Revenue
-        revenue = financials.loc["Total Revenue", latest_financial_col] \
-            if "Total Revenue" in financials.index else None
+        revenue = None
+        if latest_financial_col is not None and "Total Revenue" in financials.index:
+            revenue = financials.loc["Total Revenue", latest_financial_col] 
 
         # Net income
-        net_income = financials.loc["Net Income", latest_financial_col] \
-            if "Net Income" in financials.index else None
+        net_income = None
+        if latest_financial_col is not None and "Net Income" in financials.index:
+            net_income = financials.loc["Net Income", latest_financial_col] 
 
         # Debt
-        total_debt = balance_sheet.loc["Total Debt", latest_balance_col] \
-            if "Total Debt" in balance_sheet.index else None
+        total_debt = None
+        if latest_balance_col is not None and "Total Debt" in balance_sheet.index:
+            total_debt = balance_sheet.loc["Total Debt", latest_balance_col] 
 
         # Cash Flow
-        operating_cashflow = cashflow.loc["Operating Cash Flow", latest_cashflow_col] \
-            if "Operating Cash Flow" in cashflow.index else None
+        operating_cashflow = None
+        if latest_cashflow_col is not None and "Operating Cash Flow" in cashflow.index:
+            operating_cashflow = cashflow.loc["Operating Cash Flow", latest_cashflow_col]
 
         # News Headlines
         news = []
-
         for article in stock.news[:5]:
             news.append({
                 "title": article.get("title"),
@@ -116,33 +127,19 @@ def get_stock_data(symbol: str) -> Dict[str, Any]:
 
         data = {
             "symbol": symbol,
-
             "company_name": info.get("longName"),
-
             "current_price": info.get("currentPrice"),
-
             "market_cap": info.get("marketCap"),
-
             "pe_ratio": info.get("trailingPE"),
-
             "eps": info.get("trailingEps"),
-
             "revenue_growth": info.get("revenueGrowth"),
-
             "sector": info.get("sector"),
-
             "industry": info.get("industry"),
-
             "total_revenue": revenue,
-
             "net_income": net_income,
-
             "debt": total_debt,
-
             "cash_flow": operating_cashflow,
-
             "recommendation": info.get("recommendationKey"),
-
             "business_summary": info.get("longBusinessSummary"),
             "news": news,
             "profit_margins": info.get("profitMargins"),
